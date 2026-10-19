@@ -28,8 +28,8 @@ trait AtlasNetworkRealization[X]:
 /** One atlas realization over one exact live spatial owner.
   *
   * `parcelAssignment` is the only retained source of membership truth. Parcel
-  * regions, network regions, dense labels, and publication assignment payloads
-  * are derived from it.
+  * regions, the realization's support and network regions are derived from it;
+  * realizations that publish or rasterize derive their payloads from it too.
   */
 trait AtlasRealization:
   type X

@@ -8,7 +8,8 @@ Brain atlas semantics for Scala 3, cross-compiled to the JVM and Scala.js.
 
 The core needs no volume or surface runtime, renderer, or analysis stack.
 Membership is a locus4s `PartialSurjection` from a spatial domain onto the
-parcel domain; regions, networks and display order derive from it, so atlas
+parcel domain; parcel and network regions derive from it, and labels,
+networks and display order are typed fields over the parcel domain, so atlas
 fields compose directly with locus4s domains, selections and fields. Volume
 and surface realizations, loaders, template routes and publication adapters
 live in the libraries that own those runtimes.
