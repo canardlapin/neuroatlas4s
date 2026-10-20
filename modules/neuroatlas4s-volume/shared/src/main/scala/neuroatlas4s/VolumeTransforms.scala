@@ -18,7 +18,7 @@ final class VolumeTransformPlan private[neuroatlas4s] (
     val from: AnySpaceId,
     val to: AnySpaceId,
     val steps: Vector[TransformStep],
-    private val route: Option[VolumeRoute[AnySpaceId, Int]],
+    val route: Option[VolumeRoute[AnySpaceId, Int]],
     private val catalog: TemplateCatalog
 ):
   def nSteps: Int = steps.length

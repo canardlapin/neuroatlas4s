@@ -137,6 +137,10 @@ class MniTemplateBridgeSuite extends munit.FunSuite:
     assertEqualsDouble(pushed.y, 4.0, 1e-12)
     assertEqualsDouble(pushed.z, 5.0, 1e-12)
     assertEquals(plan.steps.head.kind, TransformKind.NonlinearWarp)
+    val registration = plan.route.get.steps.head.registration
+    assertEquals(registration.kind, neuroim4s.spatial.VolumeMapKind.Warp3D)
+    assertEquals(registration.inverseQuality, Some(1.0))
+    assert(registration.map.get.inversePullback.nonEmpty)
     // without the planned reverse step, 2009c -> 6Asym runs the warp backwards through its supplied inverse
     val noReverse = withPush.filterNot(step => step.from == SpaceId.MNI152NLin2009cAsym && step.to == SpaceId.MNI152NLin6Asym)
     val reverse = value(VolumeTransforms.plan(SpaceId.MNI152NLin2009cAsym, SpaceId.MNI152NLin6Asym, noReverse))
