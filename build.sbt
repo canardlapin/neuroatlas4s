@@ -30,6 +30,33 @@ lazy val locus4sCoreJS = ProjectRef(locus4sBuild, "locus4s-coreJS")
 lazy val locus4sDataJVM = ProjectRef(locus4sBuild, "locus4s-dataJVM")
 lazy val locus4sDataJS = ProjectRef(locus4sBuild, "locus4s-dataJS")
 
+lazy val neuroim4sRevision = "7ed49f12b1a90e18ea5ed67d48343e98a7b9547b"
+lazy val neuroim4sBuild = {
+  Seq("locus4s", "image4s", "spatial4s", "reframe4s", "gale", "graph4s").foreach { provider =>
+    sys.props.get(s"neuroatlas4s.$provider.build").foreach(System.setProperty(s"neuroim4s.$provider.build", _))
+  }
+  pinned("neuroim4s", neuroim4sRevision)
+}
+lazy val neuroim4sRoutingJVM = ProjectRef(neuroim4sBuild, "routingJVM")
+lazy val neuroim4sRoutingJS = ProjectRef(neuroim4sBuild, "routingJS")
+lazy val neuroim4sIoJVM = ProjectRef(neuroim4sBuild, "ioJVM")
+lazy val neuroim4sTransformIoJVM = ProjectRef(neuroim4sBuild, "transformIoJVM")
+
+lazy val atlasBoundaryCheck = taskKey[Unit]("Keep atlas core runtime-independent and volume portable")
+lazy val atlasBoundarySettings = Seq(
+  atlasBoundaryCheck := {
+    val repository = (LocalRootProject / baseDirectory).value
+    val coreSources = (repository / "modules/neuroatlas4s-core/shared/src/main/scala" ** "*.scala").get
+    val volumeSources = (repository / "modules/neuroatlas4s-volume/shared/src/main/scala" ** "*.scala").get
+    val coreRuntimeImport = "(?m)^import (?:image4s|neuroim4s|reframe4s|scalafim)\\.".r
+    val runtimeLeak = "(?m)^import (?:scalafim|java\\.(?:io|nio)|scala\\.io)\\.".r
+    val violations = coreSources.filter(p => coreRuntimeImport.findFirstIn(IO.read(p)).nonEmpty) ++
+      volumeSources.filter(p => runtimeLeak.findFirstIn(IO.read(p)).nonEmpty)
+    if (violations.nonEmpty) sys.error(s"Atlas runtime boundary: ${violations.mkString(", ")}")
+  },
+  Compile / compile := (Compile / compile).dependsOn(atlasBoundaryCheck).value
+)
+
 lazy val commonSettings = Seq(
   scalacOptions ++= Seq(
     "-deprecation",
@@ -53,6 +80,7 @@ lazy val core =
     .crossType(CrossType.Full)
     .in(file("modules/neuroatlas4s-core"))
     .settings(commonSettings)
+    .settings(atlasBoundarySettings)
     .settings(
       name := "neuroatlas4s-core",
       description := "Atlas identities, releases, labels, hierarchies, catalogs and realized assignments."
@@ -61,11 +89,32 @@ lazy val core =
     .jsConfigure(_.dependsOn(locus4sCoreJS, locus4sDataJS))
     .jsSettings(jsSettings)
 
+// Optional volume runtime. Core catalogs and publication records stay runtime-independent.
+lazy val volume =
+  crossProject(JSPlatform, JVMPlatform)
+    .crossType(CrossType.Full)
+    .in(file("modules/neuroatlas4s-volume"))
+    .dependsOn(core)
+    .settings(commonSettings)
+    .settings(atlasBoundarySettings)
+    .settings(name := "neuroatlas4s-volume")
+    .jvmConfigure(_.dependsOn(neuroim4sRoutingJVM))
+    .jsConfigure(_.dependsOn(neuroim4sRoutingJS))
+    .jsSettings(jsSettings)
+
+lazy val volumeIoJVM = project
+  .in(file("modules/neuroatlas4s-volume-io/jvm"))
+  .dependsOn(volume.jvm % "compile->compile;test->test")
+  .dependsOn(neuroim4sIoJVM, neuroim4sTransformIoJVM)
+  .settings(commonSettings)
+    .settings(atlasBoundarySettings)
+  .settings(name := "neuroatlas4s-volume-io")
+
 lazy val root =
   project
     .in(file("."))
-    .aggregate(core.jvm, core.js)
+    .aggregate(core.jvm, core.js, volume.jvm, volume.js, volumeIoJVM)
     .settings(name := "neuroatlas4s-root", publish / skip := true)
 
 addCommandAlias("neuroatlas4sCompileAll", ";root/compile;root/Test/compile")
-addCommandAlias("neuroatlas4sTestAll", ";coreJVM/test;coreJS/test")
+addCommandAlias("neuroatlas4sTestAll", ";coreJVM/test;coreJS/test;volumeJVM/test;volumeJS/test;volumeIoJVM/test")
