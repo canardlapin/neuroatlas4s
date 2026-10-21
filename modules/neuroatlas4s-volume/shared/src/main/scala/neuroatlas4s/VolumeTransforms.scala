@@ -151,7 +151,11 @@ object VolumeTransforms:
                   inverseQuality(step), map).left.map(failure)
               yield registration
             graph <- VolumeGraph.build(domains, registrations).left.map(failure)
-            route <- graph.path(source, target, allowInverses = true).left.map(failure)
+            // Unsupported query endpoints are ordinary route refusals. Check
+            // after graph admission so malformed provider maps still fail.
+            route <-
+              if !frames.contains(source) || !frames.contains(target) then Left(AtlasError.NoTransformRoute(source, target))
+              else graph.path(source, target, allowInverses = true).left.map(failure)
           yield
             val descriptions = route.steps.map: edge =>
               val step = normalized(edge.registration.id)

@@ -76,5 +76,30 @@ class VolumeTemplateRoutesSuite extends munit.FunSuite:
   test("identity over an uncatalogued space cannot authorize grid pullbacks"):
     val route = ok(VolumeTransforms.plan(SpaceId.Custom,SpaceId.Custom))
     point(ok(route.transform(Vector(Point3D(1,2,3)))).head,Point3D(1,2,3))
+    assertEquals(route.transform(Vector.empty),Right(Vector.empty))
     val grid = GridSpec.in(ok(TemplateCatalog.standard.frame(a)))(SpatialDims(2,2,2),Affine.identity[D3]).toOption.get
     assert(route.pullback(grid,grid).isLeft)
+
+  test("uncatalogued query endpoints retain NoTransformRoute even with empty demand"):
+    val atlas = fixtures.AtlasParityFixtures.atlas()
+    val expected = Left(AtlasError.NoTransformRoute(SpaceId.Custom,atlas.ref.coordSpace))
+    assertEquals(AtlasQuery.queryEither(atlas,Vector(Point3D.Origin),fromSpace=SpaceId.Custom),expected)
+    assertEquals(AtlasQuery.queryEither(atlas,Vector.empty,fromSpace=SpaceId.Custom),expected)
+    assertEquals(VolumeTransforms.plan(SpaceId.Custom,b).left.toOption,
+      Some(AtlasError.NoTransformRoute(SpaceId.Custom,b)))
+    val declared = ok(VolumeTransforms.plan(SpaceId.Custom,b,Vector(step(SpaceId.Custom,b,shift))))
+    point(ok(declared.transform(Vector(Point3D.Origin))).head,Point3D(3,-2,1))
+
+  test("uncatalogued target endpoints retain the directed NoTransformRoute"):
+    assertEquals(VolumeTransforms.plan(b,SpaceId.Custom).left.toOption,
+      Some(AtlasError.NoTransformRoute(b,SpaceId.Custom)))
+    assertEquals(VolumeTransforms.transformCoords(Vector.empty,b,SpaceId.Custom),
+      Left(AtlasError.NoTransformRoute(b,SpaceId.Custom)))
+
+  test("an unsupported query does not conceal a genuine provider graph frame failure"):
+    def foreign(name: String): Frame[D3] = FrameCatalog.frame(WorldSpace.Template(TemplateName(name).toOption.get))
+    val map = FramedAffine.betweenFrames[Frame[D3],Frame[D3],D3](foreign("MNI152"),foreign("MNI305"))(shift.inverse)
+    val asset = TransformAsset(WorldTransform.Linear(map,TransformProvenance.empty),"foreign")
+    VolumeTransforms.plan(SpaceId.Custom,b,Vector(step(a,b,shift).withAsset(asset))) match
+      case Left(AtlasError.Provider(_: VolumeTransformGraphFailure)) => ()
+      case other => fail(s"expected a provider graph failure, got $other")
