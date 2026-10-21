@@ -6,3 +6,7 @@ target/
 project/project/
 project/target/
 node_modules/
+
+.mote/authority/
+.mote/local/
+.mote/tmp/
