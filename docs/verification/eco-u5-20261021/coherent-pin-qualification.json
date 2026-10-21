@@ -1,0 +1,71 @@
+{
+  "source_revision": "45e85741710bf0f9811bcb68a054a00e1511bb18",
+  "base_revision": "07e3d24d58d196c82c24429aefa7b7d65a671a34",
+  "change": "neuroim4s pin21df641 ->4f75c2b; no source/test algorithms changed",
+  "override_properties": [],
+  "passed": 132,
+  "tasks": [
+    {
+      "total": 13,
+      "failed": 0,
+      "errors": 0,
+      "passed": 13
+    },
+    {
+      "total": 13,
+      "failed": 0,
+      "errors": 0,
+      "passed": 13
+    },
+    {
+      "total": 40,
+      "failed": 0,
+      "errors": 0,
+      "passed": 40
+    },
+    {
+      "total": 40,
+      "failed": 0,
+      "errors": 0,
+      "passed": 40
+    },
+    {
+      "total": 26,
+      "failed": 0,
+      "errors": 0,
+      "passed": 26
+    }
+  ],
+  "nonempty_tasks": 5,
+  "raw_log": "neuroatlas4s-eco-u5-coherent-pins-01.log.gz",
+  "raw_sha256": "457c5c7320f1a2d333c3ffce33b71ece7a2c4a09823dcb5b3029dfa654b2523c",
+  "metadata": {
+    "schema_version": 1,
+    "started_utc": "2026-10-21T18:23:05.413178+00:00",
+    "finished_utc": "2026-10-21T18:26:30.973906+00:00",
+    "duration_seconds": 205.561219,
+    "command": [
+      "env",
+      "-u",
+      "JAVA_TOOL_OPTIONS",
+      "JAVA_HOME=/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/openjdk-22/Contents/Home",
+      "SBT_WARM_HEAP=3g",
+      "python3",
+      "/Users/bbuchsbaum/code/scala/scalafim-eco-mesh-kernels-20261020/tools/build/sbt-warm",
+      "coreJVM/test",
+      "coreJS/test",
+      "volumeJVM/test",
+      "volumeJS/test",
+      "volumeIoJVM/test"
+    ],
+    "cwd": "/Users/bbuchsbaum/code/scala/neuroatlas4s-eco-u5-pins-20261021",
+    "log": "/tmp/neuroatlas4s-eco-u5-coherent-pins-01.log",
+    "exit_code": 0,
+    "child_returncode": 0,
+    "reason": "exited",
+    "detail": null,
+    "timeout_seconds": 3000.0,
+    "log_bytes": 36840
+  },
+  "limits": "Atlas surface extraction and Root default-pin cutover still pending."
+}
