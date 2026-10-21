@@ -30,9 +30,9 @@ lazy val locus4sCoreJS = ProjectRef(locus4sBuild, "locus4s-coreJS")
 lazy val locus4sDataJVM = ProjectRef(locus4sBuild, "locus4s-dataJVM")
 lazy val locus4sDataJS = ProjectRef(locus4sBuild, "locus4s-dataJS")
 
-lazy val neuroim4sRevision = "6d20f52e6701f10126f36a4fc97bf97eeb99fa24"
+lazy val neuroim4sRevision = "ca4259455fa10ffd798afc71631ace255dbfc9f0"
 lazy val neuroim4sBuild = {
-  Seq("locus4s", "image4s", "spatial4s", "reframe4s", "gale", "graph4s").foreach { provider =>
+  Seq("locus4s", "image4s", "spatial4s", "reframe4s", "gale", "graph4s", "intaglio").foreach { provider =>
     sys.props.get(s"neuroatlas4s.$provider.build").foreach(System.setProperty(s"neuroim4s.$provider.build", _))
   }
   pinned("neuroim4s", neuroim4sRevision)
