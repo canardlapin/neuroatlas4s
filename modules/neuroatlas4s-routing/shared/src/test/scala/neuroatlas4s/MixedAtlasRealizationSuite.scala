@@ -61,10 +61,6 @@ class MixedAtlasRealizationSuite extends munit.FunSuite:
       parcelVariant = Some("two-parcel-v1")
     )
 
-
-
-
-
   test("volume and bilateral surface share exact parcel identity"):
     val volume = volumeRealization(volumeRef, regions, labelVolume())
     val surface =

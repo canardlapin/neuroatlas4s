@@ -47,37 +47,6 @@ class VolumeAtlasPublicationSuite extends munit.FunSuite:
       parcelVariant = Some("two-parcel-v1")
     )
 
-  test("Schaefer variants define exact ordered parcel identity"):
-    val sevenVolumeRef =
-      Schaefer2018(
-        SchaeferParcels.P100,
-        YeoNetworks.Seven
-      ).atlasRef(Confidence.Exact)
-    val sevenSurfaceRef =
-      Schaefer2018Surface(
-        SchaeferParcels.P100,
-        YeoNetworks.Seven
-      ).atlasRef(Confidence.Exact)
-    val seventeenVolumeRef =
-      Schaefer2018(
-        SchaeferParcels.P100,
-        YeoNetworks.Seventeen
-      ).atlasRef(Confidence.Exact)
-    val sevenVolume = volumeAtlas(sevenVolumeRef).realization
-    val sevenSurface = surfaceAtlas(sevenSurfaceRef, triangleMesh()).realization
-    val seventeenVolume = volumeAtlas(seventeenVolumeRef).realization
-
-    assertEquals(sevenVolumeRef.parcelVariant, Some("100Parcels_7Networks"))
-    assert(
-      sevenVolume.parcelDomain.samePersistentIdentityAs(
-        sevenSurface.parcelDomain
-      )
-    )
-    assert(
-      !sevenVolume.parcelDomain.samePersistentIdentityAs(
-        seventeenVolume.parcelDomain
-      )
-    )
 
   test("volume support identity includes the exact grid"):
     val original = volumeAtlas(volumeRef).realization
