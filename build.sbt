@@ -51,6 +51,7 @@ lazy val neurosurf4sBuild = {
 }
 lazy val neurosurf4sCoreJVM = ProjectRef(neurosurf4sBuild, "coreJVM")
 lazy val neurosurf4sCoreJS = ProjectRef(neurosurf4sBuild, "coreJS")
+lazy val neurosurf4sSpatialIoJVM = ProjectRef(neurosurf4sBuild, "spatialIoJVM")
 lazy val neurosurf4sIoJVM = ProjectRef(neurosurf4sBuild, "ioJVM")
 lazy val neurosurf4sFixturesJVM = ProjectRef(neurosurf4sBuild, "fixturesJVM")
 lazy val neurosurf4sRoutingJVM = ProjectRef(neurosurf4sBuild, "routingJVM")
@@ -162,7 +163,7 @@ lazy val routing = crossProject(JSPlatform, JVMPlatform)
 
 lazy val routingIoJVM = project
   .in(file("modules/neuroatlas4s-routing-io/jvm"))
-  .dependsOn(routing.jvm % "compile->compile;test->test", volumeIoJVM, surfaceIoJVM, neurosurf4sFixturesJVM % "test->compile;test->test")
+  .dependsOn(routing.jvm % "compile->compile;test->test", volumeIoJVM, surfaceIoJVM, neurosurf4sSpatialIoJVM, neurosurf4sFixturesJVM % "test->compile;test->test")
   .settings(commonSettings)
   .settings(name := "neuroatlas4s-routing-io", libraryDependencies += "com.lihaoyi" %% "ujson" % "4.1.0" % Test)
 
