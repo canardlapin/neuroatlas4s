@@ -1,8 +1,9 @@
 # neuroatlas4s
 
 Brain atlas semantics for Scala 3 on the JVM and Scala.js. Atlas membership has
-one owner: a locus4s partial surjection onto an ordered parcel domain. Geometry,
-labels and display metadata derive from that assignment.
+one owner: a locus4s partial surjection onto an ordered parcel domain. Geometry
+and metadata are retained inputs; parcel regions and label materializations
+derive from the assignment.
 
 | Module | Owns | Dependencies |
 |---|---|---|
@@ -71,7 +72,8 @@ when assets are absent; `SCALAFIM_REQUIRE_REAL_ASSETS=1` requires them.
 A passing default run does not establish a timing budget or hosted CI result.
 
 Providers use immutable source revisions. A deliberate local override such as
-`-Dneuroatlas4s.neurosurf4s.build=/absolute/path` propagates to its dependencies.
+`-Dneuroatlas4s.neurosurf4s.build=/absolute/path` selects that checkout. Explicit
+overrides for its shared dependencies are forwarded separately.
 No provider needs this repository to build.
 
 Apache-2.0. See [LICENSE](LICENSE).

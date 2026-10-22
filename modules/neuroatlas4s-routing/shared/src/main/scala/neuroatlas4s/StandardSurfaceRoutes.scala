@@ -208,7 +208,7 @@ final case class Fslr32kHemisphereInput(surface: DeclaredSurface, medialWall: Me
 
 /** The qualified MNI152NLin2009cAsym -> fsLR 32k route, assembled from verified locked assets. It owns both
   * hemispheres' sampling anatomy and the pointwise-inverse bridge; [[admit]] binds it to one source grid and
-  * hemisphere. Platform loaders (`scalafim.atlas.io.StandardSurfaceRouteFiles` on the JVM) build it through
+  * hemisphere. Platform loaders (`neuroatlas4s.io.StandardSurfaceRouteFiles` on the JVM) build it through
   * [[StandardSurfaceRoutes.fsLR32kFrom2009c]].
   */
 final class Fslr32kRoute private[neuroatlas4s] (

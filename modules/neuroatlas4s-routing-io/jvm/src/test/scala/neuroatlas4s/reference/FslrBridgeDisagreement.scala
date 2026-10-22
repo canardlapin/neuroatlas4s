@@ -20,7 +20,7 @@ import java.nio.file.{Files, Path}
   * value disagreements, absolute value differences in volume units and relative to the oracle-mapped cortical
   * standard deviation, and sign flips. This is evidence about a candidate, not a qualification gate.
   *
-  * Run: `sbt "atlasJVM/Test/runMain scalafim.atlas.reference.FslrBridgeDisagreement pointwise <spec.json> <out.json> ..."`
+  * Run: `sbt "routingIoJVM/Test/runMain neuroatlas4s.reference.FslrBridgeDisagreement pointwise <spec.json> <out.json> ..."`
   * (several spec/output pairs share one bridge).
   */
 object FslrBridgeDisagreement:

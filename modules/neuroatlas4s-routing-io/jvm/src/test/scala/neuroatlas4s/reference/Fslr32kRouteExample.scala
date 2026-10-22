@@ -12,7 +12,7 @@ import java.nio.file.{Files, Path}
   * carrying the digest-bound route identity, the disclosure fields and the per-vertex inverse evidence summary.
   * It qualifies no consumer's results.
   *
-  * Run: `sbt "atlasJVM/Test/runMain scalafim.atlas.reference.Fslr32kRouteExample <templateflow-home> <receipt.json>"`
+  * Run: `sbt "routingIoJVM/Test/runMain neuroatlas4s.reference.Fslr32kRouteExample <templateflow-home> <receipt.json>"`
   */
 object Fslr32kRouteExample:
   private val gmPath = "tpl-MNI152NLin2009cAsym/tpl-MNI152NLin2009cAsym_res-01_label-GM_probseg.nii.gz"
