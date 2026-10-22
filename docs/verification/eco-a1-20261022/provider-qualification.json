@@ -1,0 +1,220 @@
+{
+  "source": "9d827c022a8e555d1a64c1cc5ad241864d5418b6",
+  "qualified_runtime_source": "467f3832cea5c48557661f95fd1a0eddd623cb99",
+  "last_delta": "Only comments/docs and byte-identical qualification tools from Root; no runtime change",
+  "review": {
+    "verdict": "APPROVE",
+    "reviewer": "/root/volume_view_astra_review",
+    "runtime_source": "6eab872383b00b9b2c501ea3f2260da0df6471ee",
+    "build_source": "467f3832cea5c48557661f95fd1a0eddd623cb99",
+    "resolved": "Mixed Schaefer identity court moved intact to routing; explicit point-map IO owner edge; inherited fresh3g native oracle grouping; README accuracy corrections applied"
+  },
+  "owning_tasks": {
+    "coreJVM/test": 13,
+    "coreJS/test": 13,
+    "ioJVM/test": 5,
+    "surfaceJVM/test": 9,
+    "surfaceJS/test": 9,
+    "surfaceIoJVM/test": 3,
+    "volumeJVM/test": 58,
+    "volumeJS/test": 58,
+    "volumeIoJVM/test": 21,
+    "routingJVM/test": 34,
+    "routingJS/test": 34,
+    "routingIoJVM/test": 17
+  },
+  "passed": 274,
+  "skipped": 0,
+  "compile_all_exit": 0,
+  "gates": {
+    "pure-01": {
+      "metadata": {
+        "schema_version": 1,
+        "started_utc": "2026-10-22T01:59:10.477379+00:00",
+        "finished_utc": "2026-10-22T02:01:03.628120+00:00",
+        "duration_seconds": 113.150341,
+        "command": [
+          "env",
+          "-u",
+          "JAVA_TOOL_OPTIONS",
+          "JAVA_HOME=/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/openjdk-22/Contents/Home",
+          "SBT_WARM_HEAP=6g",
+          "python3",
+          "/Users/bbuchsbaum/code/scala/scalafim-eco-mesh-kernels-20261020/tools/build/sbt-warm",
+          "coreJVM/test",
+          "coreJS/test",
+          "ioJVM/test",
+          "surfaceJVM/test",
+          "surfaceJS/test",
+          "surfaceIoJVM/test",
+          "show surfaceJVM/Compile/dependencyClasspath",
+          "show surfaceJS/Compile/dependencyClasspath",
+          "show surfaceIoJVM/Compile/dependencyClasspath"
+        ],
+        "cwd": "/Users/bbuchsbaum/code/scala/neuroatlas4s-eco-surface-20261022",
+        "log": "/tmp/neuroatlas4s-eco-a1-pure-01.log",
+        "exit_code": 0,
+        "child_returncode": 0,
+        "reason": "exited",
+        "detail": null,
+        "timeout_seconds": 1800.0,
+        "log_bytes": 39687
+      },
+      "raw_sha256": "52f9498df5ebbadc4ecb0e2735e5f27c7ea985e717db33af98ce229d5a92f2cd",
+      "archive": "neuroatlas4s-eco-a1-pure-01.log.gz"
+    },
+    "volume-routing-02": {
+      "metadata": {
+        "schema_version": 1,
+        "started_utc": "2026-10-22T02:01:53.752304+00:00",
+        "finished_utc": "2026-10-22T02:02:53.802731+00:00",
+        "duration_seconds": 60.050124,
+        "command": [
+          "env",
+          "-u",
+          "JAVA_TOOL_OPTIONS",
+          "JAVA_HOME=/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/openjdk-22/Contents/Home",
+          "SBT_WARM_HEAP=6g",
+          "python3",
+          "/Users/bbuchsbaum/code/scala/scalafim-eco-mesh-kernels-20261020/tools/build/sbt-warm",
+          "volumeJVM/test",
+          "volumeJS/test",
+          "volumeIoJVM/test",
+          "routingJVM/test",
+          "routingJS/test",
+          "routingIoJVM/test"
+        ],
+        "cwd": "/Users/bbuchsbaum/code/scala/neuroatlas4s-eco-surface-20261022",
+        "log": "/tmp/neuroatlas4s-eco-a1-volume-routing-02.log",
+        "exit_code": 1,
+        "child_returncode": 1,
+        "reason": "exited",
+        "detail": null,
+        "timeout_seconds": 2400.0,
+        "log_bytes": 32683
+      },
+      "raw_sha256": "48411aff022bc61255980459450a3d8a71bc5e02956bc2d7c93578228bf13420",
+      "archive": "neuroatlas4s-eco-a1-volume-routing-02.log.gz"
+    },
+    "routing-io-03": {
+      "metadata": {
+        "schema_version": 1,
+        "started_utc": "2026-10-22T02:03:55.036592+00:00",
+        "finished_utc": "2026-10-22T02:06:23.859418+00:00",
+        "duration_seconds": 148.822257,
+        "command": [
+          "env",
+          "-u",
+          "JAVA_TOOL_OPTIONS",
+          "JAVA_HOME=/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/openjdk-22/Contents/Home",
+          "SBT_WARM_HEAP=6g",
+          "python3",
+          "/Users/bbuchsbaum/code/scala/scalafim-eco-mesh-kernels-20261020/tools/build/sbt-warm",
+          "routingIoJVM/test",
+          "neuroatlas4sCompileAll"
+        ],
+        "cwd": "/Users/bbuchsbaum/code/scala/neuroatlas4s-eco-surface-20261022",
+        "log": "/tmp/neuroatlas4s-eco-a1-routing-io-03.log",
+        "exit_code": 0,
+        "child_returncode": 0,
+        "reason": "exited",
+        "detail": null,
+        "timeout_seconds": 1800.0,
+        "log_bytes": 11455
+      },
+      "raw_sha256": "9a1e122670664e7853e19bfb1358052c72ca60efb49eed9d65cb98d5aeccdbe4",
+      "archive": "neuroatlas4s-eco-a1-routing-io-03.log.gz"
+    },
+    "isolated-io-04": {
+      "metadata": {
+        "schema_version": 1,
+        "started_utc": "2026-10-22T02:07:53.611901+00:00",
+        "finished_utc": "2026-10-22T02:10:09.583762+00:00",
+        "duration_seconds": 135.959439,
+        "command": [
+          "env",
+          "-u",
+          "JAVA_TOOL_OPTIONS",
+          "JAVA_HOME=/Users/bbuchsbaum/Library/Java/JavaVirtualMachines/openjdk-22/Contents/Home",
+          "SBT_WARM_HEAP=6g",
+          "python3",
+          "/Users/bbuchsbaum/code/scala/scalafim-eco-mesh-kernels-20261020/tools/build/sbt-warm",
+          "routingIoJVM/test",
+          "neuroatlas4sCompileAll"
+        ],
+        "cwd": "/Users/bbuchsbaum/code/scala/neuroatlas4s-eco-surface-20261022",
+        "log": "/tmp/neuroatlas4s-eco-a1-isolated-io-04.log",
+        "exit_code": 0,
+        "child_returncode": 0,
+        "reason": "exited",
+        "detail": null,
+        "timeout_seconds": 1800.0,
+        "log_bytes": 11080
+      },
+      "raw_sha256": "66c8492a945bbf2e468e0479418bf925ac1f50d6c4aefb6c4e9839263d37a641",
+      "archive": "neuroatlas4s-eco-a1-isolated-io-04.log.gz"
+    },
+    "assets-05": {
+      "metadata": {
+        "schema_version": 1,
+        "started_utc": "2026-10-22T02:11:27.468889+00:00",
+        "finished_utc": "2026-10-22T02:11:27.788466+00:00",
+        "duration_seconds": 0.319481,
+        "command": [
+          "python3",
+          "tools/surface/fslr-qualification/verify_assets.py",
+          "/Users/bbuchsbaum/.cache/templateflow"
+        ],
+        "cwd": "/Users/bbuchsbaum/code/scala/neuroatlas4s-eco-surface-20261022",
+        "log": "/tmp/neuroatlas4s-eco-a1-assets-05.log",
+        "exit_code": 0,
+        "child_returncode": 0,
+        "reason": "exited",
+        "detail": null,
+        "timeout_seconds": 180.0,
+        "log_bytes": 2667
+      },
+      "raw_sha256": "21f44f9ec1ff866ceb304d6307b97b69aaa763ea224950d48eca10e865971e16",
+      "archive": "neuroatlas4s-eco-a1-assets-05.log.gz"
+    },
+    "r-parity-06": {
+      "metadata": {
+        "schema_version": 1,
+        "started_utc": "2026-10-22T02:11:27.453513+00:00",
+        "finished_utc": "2026-10-22T02:11:33.232201+00:00",
+        "duration_seconds": 5.778528,
+        "command": [
+          "Rscript",
+          "tools/r-parity/check_neuroatlas_atlas_parity.R"
+        ],
+        "cwd": "/Users/bbuchsbaum/code/scala/neuroatlas4s-eco-surface-20261022",
+        "log": "/tmp/neuroatlas4s-eco-a1-r-parity-06.log",
+        "exit_code": 0,
+        "child_returncode": 0,
+        "reason": "exited",
+        "detail": null,
+        "timeout_seconds": 180.0,
+        "log_bytes": 352
+      },
+      "raw_sha256": "0bd9012239bc6d3ed03f8b7a9d74878f098f701cf31a73e38368e9bfe78fbef5",
+      "archive": "neuroatlas4s-eco-a1-r-parity-06.log.gz"
+    }
+  },
+  "source_custody": {
+    "raw_oracle_files": 6,
+    "asset_lock_and_verifier_byte_identical": true,
+    "R_parity_tool_byte_identical": true,
+    "historic_schema_tokens_cache_paths_preserved": true,
+    "Root_originals_still_present_until_cutover": true
+  },
+  "real_asset_results": {
+    "standard_route_token": "scalafim-route:sha256:68fc557306abb1b15dc02007d80f2a067d2190a3c1c421f3e339d8877350be6a",
+    "vertices_per_side": 32492,
+    "unplaced": 0,
+    "voxel_disagreements_res01_res02": 0,
+    "maximum_placement_oracle_error_mm": 1.5311129897981346e-08,
+    "inverse_residual_gates": "Original assertions passed; reverse residual0.139mm retained, ITK fixed-point forward comparison~0.0104mm retained",
+    "locked_files_verified": 12
+  },
+  "limits": "Independent immutable consumer and Root deletion pending. No new timing budget, hosted CI, native UI or historical15-map P4 replay claim. Legacy v1 route schema spellings retained."
+}
