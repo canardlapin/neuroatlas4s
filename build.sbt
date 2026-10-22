@@ -166,6 +166,26 @@ lazy val routingIoJVM = project
   .dependsOn(routing.jvm % "compile->compile;test->test", volumeIoJVM, surfaceIoJVM, neurosurf4sSpatialIoJVM, neurosurf4sFixturesJVM % "test->compile;test->test")
   .settings(commonSettings)
   .settings(name := "neuroatlas4s-routing-io", libraryDependencies += "com.lihaoyi" %% "ujson" % "4.1.0" % Test)
+  .settings(
+      // Full-resolution MNI inversion retains large fields and residual arrays. Give this
+      // native oracle a fresh heap on every gate, independent of the resident sbt server.
+      Test / parallelExecution := false,
+      Test / testForkedParallel := false,
+      Test / testGrouping := {
+        val (nativeOracle, ordinary) = (Test / definedTests).value.partition(
+          _.name == "neuroatlas4s.io.MniTemplateBridgeFilesSuite"
+        )
+        val inherited = (Test / forkOptions).value
+        val nativeOptions = inherited.withRunJVMOptions(
+          inherited.runJVMOptions.filterNot(option => option.startsWith("-Xmx") || option.startsWith("-Xms")) ++
+            Vector("-Xmx3g", "-XX:ActiveProcessorCount=2")
+        )
+        Seq(
+          Tests.Group("atlas", ordinary, Tests.InProcess),
+          Tests.Group("atlas-mni-native-oracle", nativeOracle, Tests.SubProcess(nativeOptions))
+        ).filter(_.tests.nonEmpty)
+      }
+  )
 
 lazy val root =
   project

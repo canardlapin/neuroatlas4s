@@ -1,68 +1,77 @@
 # neuroatlas4s
 
-Brain atlas semantics for Scala 3, cross-compiled to the JVM and Scala.js.
+Brain atlas semantics for Scala 3 on the JVM and Scala.js. Atlas membership has
+one owner: a locus4s partial surjection onto an ordered parcel domain. Geometry,
+labels and display metadata derive from that assignment.
 
-| Module | Package | Contents | Depends on |
-|---|---|---|---|
-| `neuroatlas4s-core` | `neuroatlas4s` | Atlas identities, releases, labels, hierarchies, catalog, realized assignments and runtime-neutral Neuropublish v1 records/validation | locus4s |
-| `neuroatlas4s-volume` | `neuroatlas4s` | Exact volume realizations, coordinate queries, parcel/series reductions, overlap, adjacency and volume template routes | core, neuroim4s routing |
-| `neuroatlas4s-volume-io` (JVM) | `neuroatlas4s.io` | Schaefer, Glasser, Brainnetome and ASEG loading, asset provenance/cache, inspected TemplateFlow composite admission | volume, neuroim4s IO and transform IO |
+| Module | Owns | Dependencies |
+|---|---|---|
+| `core` | Identities, releases, labels, hierarchy, catalog and runtime-neutral publication | locus4s |
+| `ioJVM` | Atlas assets, explicit cache policy and file provenance | core, JDK IO |
+| `volume` | Volume realizations, queries, reductions, adjacency and volume template policy | core, neuroim4s routing |
+| `volumeIoJVM` | Volume atlas loaders and inspected TemplateFlow composite admission | volume, atlas IO, neuroim4s IO |
+| `surface` | Bilateral assignments, vertex queries, parcel contacts/distances and topology publication | core, neurosurf4s core |
+| `surfaceIoJVM` | GIFTI label atlas admission and file provenance | surface, atlas IO, neurosurf4s IO |
+| `routing` | Mixed template manifests, standard surface route policy and explicit sampling plans | surface, volume, neurosurf4s routing |
+| `routingIoJVM` | Digest-locked standard route loading | routing, volume/surface IO, neurosurf4s point-map IO |
 
-The core needs no volume or surface runtime, renderer, or analysis stack.
-Membership is a locus4s `PartialSurjection` from a spatial domain onto the
-parcel domain; parcel and network regions derive from it, and labels,
-networks and display order are typed fields over the parcel domain, so atlas
-fields compose directly with locus4s domains, selections and fields. Volume realizations and queries use the optional volume module. Surface
-realizations and mixed volume/surface routes remain in ScalaFIM until the
-surface extraction. Neither volume module depends on ScalaFIM or a surface or
-display runtime. Image formats and coordinate kernels remain in neuroim4s and
-its providers; this library supplies atlas admission and mapping policy.
+Core catalogs require no volume or surface runtime. Surface assignments and GIFTI
+loading require no volume, transform or rendering runtime. Image formats,
+coordinate execution, projection mechanics and rendering remain in their provider
+libraries. This library supplies atlas admission, catalog and template policy;
+it has no ScalaFIM or MVPA dependency.
 
-An atlas reference keeps three identities apart: the template space an atlas
-is defined in, its sampled resolution or density, and its release. Failures
-from a provider an operation delegates to (image geometry, a transform)
-arrive as `AtlasError.Provider` with a typed cause supplied by that library.
-
-Persisted spellings (space ids, artifact roles, licence strings, atlas ids)
-are unchanged from ScalaFIM, where this code originated.
-
-## Volume use
+All public shared types are in `neuroatlas4s`; JVM file APIs are in
+`neuroatlas4s.io`. Select the modules an application needs, then import their
+actual types:
 
 ```scala
 import neuroatlas4s.*
-import neuroatlas4s.syntax.*
-// JVM only:
+import neuroatlas4s.syntax.* // volume query/reduction syntax
+// JVM loaders, when selected:
 import neuroatlas4s.io.*
 ```
 
-`VolumeAtlas.fromLabelVolume` admits a provider-owned categorical grid. Its
-`realization.parcelAssignment` is the only membership owner; `labelVolume` is
-a derived materialization. Reduction requires the exact live grid owner,
-keeps parcel order and uses explicit empty-parcel policy. Queries preserve
-nearest-voxel ties and radius ordering. Native IO retains signed label,
-affine/scaling and source SHA-256 admission.
+`VolumeAtlas.fromLabelVolume` admits the exact live categorical grid owner.
+`SurfaceAtlas.fromLabeledSurfaces` admits bilateral labels over surface geometry.
+Both expose their single `realization.parcelAssignment`, parcel-indexed metadata
+and keys, explicit display order and optional validated network assignment.
+Equal cardinality does not establish domain alignment. Surface support identity
+includes ordered topology and hemisphere; coordinate changes do not rewrite it.
 
-`VolumeTransforms` plans anatomical volume template steps over neuroim4s's
-`VolumeGraph`; surface endpoints are refused. Routes prefer forward paths,
-then reversible inverse paths, and preserve manifest order for ties. Missing
-maps and planned steps remain non-executable even for empty requests.
-`TemplateGrids` keeps the persistent MNI grid ids. `MniTemplateBridge` admits
-only the inspected composite and refuses the misleading reverse file; an
-estimated inverse must pass the existing residual gates. `MniTemplateBridgeFiles.loadCached`
-takes explicit cache roots; it performs no implicit download.
+`AtlasRealizationError` contains runtime-neutral typed admission failures.
+`VolumeAtlasRealizationError` retains grid/parcellation causes and wraps the
+common error explicitly. These are closed error types; their messages preserve
+the original admission detail.
 
-## Build
+`SpaceTransforms` plans mixed template routes; `VolumeTransforms` accepts volume
+endpoints only. Routes prefer forward paths, then qualified inverse paths.
+Missing maps and planned steps remain explicitly non-executable. Standard fsLR
+routes preserve asset digests, publisher anatomical evidence, hemisphere order,
+exact versus approximate mapping and their versioned identity token. Numerical
+inverses require the existing residual gates; a filename alone is not evidence
+of the direction of a transform. Path-based loaders do not download assets.
 
-Scala 3.7.4, sbt 1.11.7, Node.js for the Scala.js tests.
+Persisted publication bytes, schema names, route tokens and the existing
+`scalafim/atlas` cache location retain their original spelling.
+
+## Checks
+
+Scala 3.7.4, sbt 1.11.7 and Node.js for Scala.js tests.
 
 ```sh
-sbt neuroatlas4sTestAll
+sbt coreJVM/test coreJS/test ioJVM/test surfaceJVM/test surfaceJS/test surfaceIoJVM/test
+sbt volumeJVM/test volumeJS/test volumeIoJVM/test
+sbt routingJVM/test routingJS/test routingIoJVM/test
 ```
 
-Providers are pinned to immutable revisions in `build.sbt`. For coordinated
-development, point a provider at a sibling checkout with
-`-Dneuroatlas4s.locus4s.build=/absolute/path/to/locus4s`.
+The native MNI inverse court uses a separate 3 GiB JVM. Real-asset courts skip
+when assets are absent; `SCALAFIM_REQUIRE_REAL_ASSETS=1` requires them.
+`SCALAFIM_TIMING_BUDGETS=1` separately enables frozen timing assertions.
+A passing default run does not establish a timing budget or hosted CI result.
 
-## License
+Providers use immutable source revisions. A deliberate local override such as
+`-Dneuroatlas4s.neurosurf4s.build=/absolute/path` propagates to its dependencies.
+No provider needs this repository to build.
 
 Apache-2.0. See [LICENSE](LICENSE).
