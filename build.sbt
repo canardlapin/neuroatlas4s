@@ -42,13 +42,27 @@ lazy val neuroim4sRoutingJS = ProjectRef(neuroim4sBuild, "routingJS")
 lazy val neuroim4sIoJVM = ProjectRef(neuroim4sBuild, "ioJVM")
 lazy val neuroim4sTransformIoJVM = ProjectRef(neuroim4sBuild, "transformIoJVM")
 
+lazy val neurosurf4sRevision = "73a244fbe5d7b4db2f0c946d98fa2a3c00101ab7"
+lazy val neurosurf4sBuild = {
+  Seq("spatial4s", "locus4s", "mesh4s", "image4s", "graph4s", "zarr4s", "neuroim4s", "reframe4s", "gale", "ravel", "intaglio").foreach { provider =>
+    sys.props.get(s"neuroatlas4s.$provider.build").foreach(System.setProperty(s"neurosurf4s.$provider.build", _))
+  }
+  pinned("neurosurf4s", neurosurf4sRevision)
+}
+lazy val neurosurf4sCoreJVM = ProjectRef(neurosurf4sBuild, "coreJVM")
+lazy val neurosurf4sCoreJS = ProjectRef(neurosurf4sBuild, "coreJS")
+lazy val neurosurf4sIoJVM = ProjectRef(neurosurf4sBuild, "ioJVM")
+lazy val neurosurf4sFixturesJVM = ProjectRef(neurosurf4sBuild, "fixturesJVM")
+lazy val neurosurf4sRoutingJVM = ProjectRef(neurosurf4sBuild, "routingJVM")
+lazy val neurosurf4sRoutingJS = ProjectRef(neurosurf4sBuild, "routingJS")
+
 lazy val atlasBoundaryCheck = taskKey[Unit]("Keep atlas core runtime-independent and volume portable")
 lazy val atlasBoundarySettings = Seq(
   atlasBoundaryCheck := {
     val repository = (LocalRootProject / baseDirectory).value
     val coreSources = (repository / "modules/neuroatlas4s-core/shared/src/main/scala" ** "*.scala").get
     val volumeSources = (repository / "modules/neuroatlas4s-volume/shared/src/main/scala" ** "*.scala").get
-    val coreRuntimeImport = "(?m)^import (?:image4s|neuroim4s|reframe4s|scalafim)\\.".r
+    val coreRuntimeImport = "(?m)^import (?:image4s|neuroim4s|neurosurf4s|reframe4s|scalafim)\\.".r
     val runtimeLeak = "(?m)^import (?:scalafim|java\\.(?:io|nio)|scala\\.io)\\.".r
     val violations = coreSources.filter(p => coreRuntimeImport.findFirstIn(IO.read(p)).nonEmpty) ++
       volumeSources.filter(p => runtimeLeak.findFirstIn(IO.read(p)).nonEmpty)
@@ -102,19 +116,61 @@ lazy val volume =
     .jsConfigure(_.dependsOn(neuroim4sRoutingJS))
     .jsSettings(jsSettings)
 
+lazy val ioJVM = project
+  .in(file("modules/neuroatlas4s-io/jvm"))
+  .dependsOn(core.jvm)
+  .settings(commonSettings)
+  .settings(name := "neuroatlas4s-io")
+
 lazy val volumeIoJVM = project
   .in(file("modules/neuroatlas4s-volume-io/jvm"))
-  .dependsOn(volume.jvm % "compile->compile;test->test")
+  .dependsOn(volume.jvm % "compile->compile;test->test", ioJVM)
   .dependsOn(neuroim4sIoJVM, neuroim4sTransformIoJVM)
   .settings(commonSettings)
     .settings(atlasBoundarySettings)
   .settings(name := "neuroatlas4s-volume-io")
 
+// Surface assignments and GIFTI loading do not acquire the volume or render stack.
+lazy val surface = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Full)
+  .in(file("modules/neuroatlas4s-surface"))
+  .dependsOn(core)
+  .settings(commonSettings)
+  .settings(atlasBoundarySettings)
+  .settings(name := "neuroatlas4s-surface")
+  .jvmConfigure(_.dependsOn(neurosurf4sCoreJVM))
+  .jsConfigure(_.dependsOn(neurosurf4sCoreJS))
+  .jsSettings(jsSettings)
+
+lazy val surfaceIoJVM = project
+  .in(file("modules/neuroatlas4s-surface-io/jvm"))
+  .dependsOn(surface.jvm % "compile->compile;test->test", ioJVM, neurosurf4sIoJVM)
+  .settings(commonSettings)
+  .settings(name := "neuroatlas4s-surface-io")
+
+// Atlas template policy composes the providers' anatomical execution.
+lazy val routing = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Full)
+  .in(file("modules/neuroatlas4s-routing"))
+  .dependsOn(surface, volume % "compile->compile;test->test")
+  .settings(commonSettings)
+  .settings(atlasBoundarySettings)
+  .settings(name := "neuroatlas4s-routing")
+  .jvmConfigure(_.dependsOn(neurosurf4sRoutingJVM))
+  .jsConfigure(_.dependsOn(neurosurf4sRoutingJS))
+  .jsSettings(jsSettings)
+
+lazy val routingIoJVM = project
+  .in(file("modules/neuroatlas4s-routing-io/jvm"))
+  .dependsOn(routing.jvm % "compile->compile;test->test", volumeIoJVM, surfaceIoJVM, neurosurf4sFixturesJVM % "test->compile;test->test")
+  .settings(commonSettings)
+  .settings(name := "neuroatlas4s-routing-io", libraryDependencies += "com.lihaoyi" %% "ujson" % "4.1.0" % Test)
+
 lazy val root =
   project
     .in(file("."))
-    .aggregate(core.jvm, core.js, volume.jvm, volume.js, volumeIoJVM)
+    .aggregate(core.jvm, core.js, ioJVM, volume.jvm, volume.js, volumeIoJVM, surface.jvm, surface.js, surfaceIoJVM, routing.jvm, routing.js, routingIoJVM)
     .settings(name := "neuroatlas4s-root", publish / skip := true)
 
 addCommandAlias("neuroatlas4sCompileAll", ";root/compile;root/Test/compile")
-addCommandAlias("neuroatlas4sTestAll", ";coreJVM/test;coreJS/test;volumeJVM/test;volumeJS/test;volumeIoJVM/test")
+addCommandAlias("neuroatlas4sTestAll", ";coreJVM/test;coreJS/test;ioJVM/test;volumeJVM/test;volumeJS/test;volumeIoJVM/test;surfaceJVM/test;surfaceJS/test;surfaceIoJVM/test;routingJVM/test;routingJS/test;routingIoJVM/test")

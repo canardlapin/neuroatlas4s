@@ -23,7 +23,7 @@ import neuroim4s.image.SomeScalarVolume
 import neuroim4s.image.SampleSpaces
 import neuroim4s.image.SampleSpaces.*
 
-private[volume] object VolumeTestImages:
+object VolumeTestImages:
   def labelVolume(
       space: SomeSampleSpace,
       values: Array[Int],

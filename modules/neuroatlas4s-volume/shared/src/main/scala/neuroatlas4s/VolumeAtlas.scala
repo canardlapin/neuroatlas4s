@@ -94,7 +94,7 @@ object VolumeAtlas:
       regions: RegionIndex,
       labels: SomeLabelVolume[Int],
       provenance: AtlasProvenance
-  ): Either[AtlasRealizationError, VolumeAtlas] =
+  ): Either[VolumeAtlasRealizationError, VolumeAtlas] =
     AtlasRealizations
       .volumeFromLabelsIn(
         DomainRegistry.empty,
