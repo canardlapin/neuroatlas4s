@@ -59,6 +59,22 @@ symlinks pointed at external leaf directories that had not yet been created.
 Creating those external directories was the only correction; it is not a source
 or provider failure.
 
+## Tracker custody correction
+
+An accidental fresh canonical store `st-01M5MXV2Y775QJG82XNQBE20VY` carried
+only this actor's superseded issue `bd-01M5MXVF03RF257BBPK74RDZP2`. It was
+closed and released, then retained intact at
+`/Volumes/EcoCompileHFS20261023/work/neuroatlas4s-accidental-mote-bootstrap-20261023`.
+Its complete tar archive has SHA-256
+`d709f4f08b3c0a0eae997585d3d0f88e9f639df3203784895f07863d46d30645`; all 22
+regular-file hashes and 27 archive members were verified before replacement.
+
+Canonical tracking now reuses the immutable historical Git-versioned lineage
+`st-01M5FV72V90JPBYJFH06V5FV85` from the 4df candidate, without copying clone
+authority or local state. The replacement issue is
+`bd-01M5MYFVKQQKQ56PKCKD2R373N`; its same-lineage immutable operations are
+included with this candidate.
+
 ## Boundary
 
 These checks establish the listed local JVM/Scala.js consumer contracts at the
